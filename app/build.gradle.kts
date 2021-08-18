@@ -79,6 +79,8 @@ dependencies {
     // Network
     addAllNetworkDependencies()
 
+    implementation(Dependencies.WEB_SOCKETS)
+
     // Android Lifecycle
     addLifecycleDependencies()
 
