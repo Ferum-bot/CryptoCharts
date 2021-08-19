@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CryptoCharts</string>
+    <string name="reconnect">Reconnect</string>
+    <string name="connection_failed">Connection failed!</string>
 </resources>

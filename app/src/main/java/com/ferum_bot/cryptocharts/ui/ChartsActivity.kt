@@ -4,12 +4,23 @@ import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsAnimationCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.ferum_bot.cryptocharts.R
+import com.ferum_bot.cryptocharts.core.enums.SocketConnectionStatus
 import com.ferum_bot.cryptocharts.databinding.ActivityChartsBinding
 import com.ferum_bot.cryptocharts.di.Injector
 import com.ferum_bot.cryptocharts.di.components.ChartsComponent
+import com.google.android.material.snackbar.Snackbar
+import javax.inject.Singleton
 
+@Singleton
 class ChartsActivity : AppCompatActivity() {
 
     private val component: ChartsComponent by lazy(LazyThreadSafetyMode.NONE) {
@@ -27,13 +38,68 @@ class ChartsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        setAllObservers()
+        setAllClickListeners()
         configureBottomNavigationBar()
+        enableFullScreen()
+    }
+
+    private fun setAllObservers() {
+        viewModel.networkStatus.observe(this) { status ->
+            when(status) {
+                SocketConnectionStatus.CONNECTING -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.errorLabel.visibility = View.GONE
+                    binding.retryButton.visibility = View.GONE
+                }
+                SocketConnectionStatus.CONNECTED -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.errorLabel.visibility = View.GONE
+                    binding.retryButton.visibility = View.GONE
+                }
+                SocketConnectionStatus.DISCONNECTED, null -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.errorLabel.visibility = View.VISIBLE
+                    binding.retryButton.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        viewModel.errorMessage.observe(this) { message ->
+            message ?: return@observe
+            showError(message)
+        }
+    }
+
+    private fun setAllClickListeners() {
+        binding.retryButton.setOnClickListener {
+            viewModel.reconnect()
+        }
     }
 
     private fun configureBottomNavigationBar() {
         window.navigationBarColor = Color.BLACK
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             window.navigationBarDividerColor = Color.BLACK
+        }
+    }
+
+    private fun enableFullScreen() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, binding.root).apply {
+            hide(WindowInsetsCompat.Type.systemBars())
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+
+    private fun showError(text: String) {
+        Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG).apply {
+            setBackgroundTint(Color.RED)
+            setTextColor(Color.BLACK)
+            animationMode = Snackbar.ANIMATION_MODE_SLIDE
+
+            val textView = this.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+            textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
         }
     }
 }
