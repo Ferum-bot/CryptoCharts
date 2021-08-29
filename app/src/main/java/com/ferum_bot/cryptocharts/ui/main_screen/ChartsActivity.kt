@@ -1,4 +1,4 @@
-package com.ferum_bot.cryptocharts.ui
+package com.ferum_bot.cryptocharts.ui.main_screen
 
 import android.graphics.Color
 import android.os.Build
@@ -14,6 +14,7 @@ import com.ferum_bot.cryptocharts.network.enums.SocketConnectionStatus
 import com.ferum_bot.cryptocharts.databinding.ActivityChartsBinding
 import com.ferum_bot.cryptocharts.di.Injector
 import com.ferum_bot.cryptocharts.di.components.ChartsComponent
+import com.ferum_bot.cryptocharts.ui.recycler.MainAdapter
 import com.google.android.material.snackbar.Snackbar
 import javax.inject.Singleton
 
@@ -31,14 +32,15 @@ class ChartsActivity : AppCompatActivity() {
 
     private val viewModel: ChartsViewModel by viewModels { component.viewModelFactory }
 
+    private val adapter by lazy { MainAdapter() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         setAllObservers()
         setAllClickListeners()
-        configureBottomNavigationBar()
-        enableFullScreen()
+        configureLayout()
     }
 
     private fun setAllObservers() {
@@ -48,6 +50,7 @@ class ChartsActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.VISIBLE
                     binding.errorLabel.visibility = View.GONE
                     binding.retryButton.visibility = View.GONE
+                    binding.mainRecycler.visibility = View.GONE
                 }
                 SocketConnectionStatus.CONNECTED -> {
                     binding.progressBar.visibility = View.GONE
@@ -58,6 +61,7 @@ class ChartsActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.GONE
                     binding.errorLabel.visibility = View.VISIBLE
                     binding.retryButton.visibility = View.VISIBLE
+                    binding.mainRecycler.visibility = View.GONE
                 }
             }
         }
@@ -66,12 +70,22 @@ class ChartsActivity : AppCompatActivity() {
             message ?: return@observe
             showError(message)
         }
+
+        viewModel.currentTickers.observe(this) { tickers ->
+            adapter.items = tickers
+        }
     }
 
     private fun setAllClickListeners() {
         binding.retryButton.setOnClickListener {
             viewModel.reconnect()
         }
+    }
+
+    private fun configureLayout() {
+        configureBottomNavigationBar()
+        enableFullScreen()
+        configureRecycler()
     }
 
     private fun configureBottomNavigationBar() {
@@ -87,6 +101,10 @@ class ChartsActivity : AppCompatActivity() {
             hide(WindowInsetsCompat.Type.systemBars())
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
+    }
+
+    private fun configureRecycler() {
+        binding.mainRecycler.adapter = adapter
     }
 
     private fun showError(text: String) {

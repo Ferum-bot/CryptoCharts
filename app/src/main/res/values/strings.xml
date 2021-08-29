@@ -2,4 +2,13 @@
     <string name="app_name">CryptoCharts</string>
     <string name="reconnect">Reconnect</string>
     <string name="connection_failed">Connection failed!</string>
+    <string name="name">Name: </string>
+    <string name="current_price">Current Price:</string>
+    <string name="last_24_hours_volume">Last 24 hours volume:</string>
+    <string name="lowest_24_hours_price">Lowest 24 hours price:</string>
+    <string name="highest_24_hours_price">Highest 24 hours price:</string>
+    <string name="best_bid">Best BID:</string>
+    <string name="best_ask">Best ask:</string>
+    <string name="time_stamp">Time Stamp:</string>
+    <string name="side">Side:</string>
 </resources>

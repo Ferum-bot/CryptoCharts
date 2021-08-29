@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BaseTextViewStyle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/amaranth</item>
+    </style>
+
+    <style name="BaseLabelStyle" parent="BaseTextViewStyle">
+        <item name="android:textSize">14sp</item>
+    </style>
+</resources>

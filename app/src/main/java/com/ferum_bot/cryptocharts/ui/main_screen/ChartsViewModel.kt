@@ -1,9 +1,10 @@
-package com.ferum_bot.cryptocharts.ui
+package com.ferum_bot.cryptocharts.ui.main_screen
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ferum_bot.cryptocharts.core.models.Ticker
 import com.ferum_bot.cryptocharts.network.enums.SocketConnectionStatus
 import com.ferum_bot.cryptocharts.interactors.ChartsInteractor
 import com.neovisionaries.ws.client.WebSocketAdapter
@@ -20,6 +21,9 @@ class ChartsViewModel @Inject constructor(
 
     private val _errorMessage: MutableLiveData<String?> = MutableLiveData(null)
     val errorMessage: LiveData<String?> = _errorMessage
+
+    private val _currentTickers: MutableLiveData<List<Ticker>> = MutableLiveData()
+    val currentTickers: LiveData<List<Ticker>> = _currentTickers
 
     private var connectionJob: Job? = null
 

@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:background="@drawable/bg_layout_ticker"
+        tools:layout_margin="8dp">
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/start_guideline"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="8dp"/>
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/end_guideline"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="8dp"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/product_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/name"
+            android:layout_marginTop="8dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/start_guideline"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/product_name_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintTop_toTopOf="@id/product_name_label"
+            app:layout_constraintStart_toEndOf="@id/product_name_label"
+            app:layout_constraintEnd_toEndOf="@id/end_guideline"
+            tools:text="BTC"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/product_price_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/current_price"
+            android:layout_marginTop="8dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintTop_toBottomOf="@id/product_name_label"
+            app:layout_constraintStart_toStartOf="@id/start_guideline"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/product_price_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintStart_toEndOf="@id/product_price_label"
+            app:layout_constraintTop_toTopOf="@id/product_price_label"
+            app:layout_constraintEnd_toEndOf="@id/end_guideline"
+            tools:text="123400.657"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/open_price_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/current_price"
+            android:layout_marginTop="8dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintTop_toBottomOf="@id/product_name_label"
+            app:layout_constraintStart_toStartOf="@id/start_guideline"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/open_price_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintStart_toEndOf="@id/product_price_label"
+            app:layout_constraintTop_toTopOf="@id/product_price_label"
+            app:layout_constraintEnd_toEndOf="@id/end_guideline"
+            tools:text="123400.657"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/volume_price_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/last_24_hours_volume"
+            android:layout_marginTop="8dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintTop_toBottomOf="@id/product_price_label"
+            app:layout_constraintStart_toStartOf="@id/start_guideline"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/volume_price_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintStart_toEndOf="@id/volume_price_label"
+            app:layout_constraintTop_toTopOf="@id/volume_price_label"
+            app:layout_constraintEnd_toEndOf="@id/end_guideline"
+            tools:text="123400.657"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/low_price_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lowest_24_hours_price"
+            android:layout_marginTop="8dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintTop_toBottomOf="@id/volume_price_label"
+            app:layout_constraintStart_toStartOf="@id/start_guideline"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/low_price_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintStart_toEndOf="@id/low_price_label"
+            app:layout_constraintTop_toTopOf="@id/low_price_label"
+            app:layout_constraintEnd_toEndOf="@id/end_guideline"
+            tools:text="123400.657"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/high_price_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/highest_24_hours_price"
+            android:layout_marginTop="8dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintTop_toBottomOf="@id/low_price_label"
+            app:layout_constraintStart_toStartOf="@id/start_guideline"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/high_price_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintStart_toEndOf="@id/high_price_label"
+            app:layout_constraintTop_toTopOf="@id/high_price_label"
+            app:layout_constraintEnd_toEndOf="@id/end_guideline"
+            tools:text="123400.657"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/best_bid_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/best_bid"
+            android:layout_marginTop="8dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintTop_toBottomOf="@id/high_price_label"
+            app:layout_constraintStart_toStartOf="@id/start_guideline"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/best_bid_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintStart_toEndOf="@id/best_bid_label"
+            app:layout_constraintTop_toTopOf="@id/best_bid_label"
+            app:layout_constraintEnd_toEndOf="@id/end_guideline"
+            tools:text="123400.657"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/best_ask_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/best_ask"
+            android:layout_marginTop="8dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintTop_toBottomOf="@id/best_bid_label"
+            app:layout_constraintStart_toStartOf="@id/start_guideline"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/best_ask_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintStart_toEndOf="@id/best_ask_label"
+            app:layout_constraintTop_toTopOf="@id/best_ask_label"
+            app:layout_constraintEnd_toEndOf="@id/end_guideline"
+            tools:text="123400.657"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_stamp"
+            android:layout_marginTop="8dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintTop_toBottomOf="@id/best_ask_label"
+            app:layout_constraintStart_toStartOf="@id/start_guideline"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/time_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintStart_toEndOf="@id/time_label"
+            app:layout_constraintTop_toTopOf="@id/time_label"
+            app:layout_constraintEnd_toEndOf="@id/end_guideline"
+            tools:text="123400.657"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/side_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/side"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintTop_toBottomOf="@id/time_label"
+            app:layout_constraintStart_toStartOf="@id/start_guideline"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/side_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            style="@style/BaseLabelStyle"
+            app:layout_constraintStart_toEndOf="@id/side_label"
+            app:layout_constraintTop_toTopOf="@id/side_label"
+            app:layout_constraintEnd_toEndOf="@id/end_guideline"
+            tools:text="123400.657"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
