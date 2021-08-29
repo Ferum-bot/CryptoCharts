@@ -1,6 +1,6 @@
 package com.ferum_bot.cryptocharts.network
 
-import com.ferum_bot.cryptocharts.core.enums.SocketCloseCodes
+import com.ferum_bot.cryptocharts.network.enums.SocketCloseCodes
 
 interface SocketConnectionController {
 

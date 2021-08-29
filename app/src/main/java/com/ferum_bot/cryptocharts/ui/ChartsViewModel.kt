@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ferum_bot.cryptocharts.core.enums.SocketConnectionStatus
+import com.ferum_bot.cryptocharts.network.enums.SocketConnectionStatus
 import com.ferum_bot.cryptocharts.interactors.ChartsInteractor
 import com.neovisionaries.ws.client.WebSocketAdapter
 import kotlinx.coroutines.Job

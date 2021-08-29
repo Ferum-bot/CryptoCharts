@@ -1,4 +1,4 @@
-package com.ferum_bot.cryptocharts.core.enums
+package com.ferum_bot.cryptocharts.network.enums
 
 import com.neovisionaries.ws.client.WebSocketCloseCode
 
