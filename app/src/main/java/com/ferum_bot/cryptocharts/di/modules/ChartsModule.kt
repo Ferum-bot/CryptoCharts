@@ -3,6 +3,7 @@ package com.ferum_bot.cryptocharts.di.modules
 import com.ferum_bot.cryptocharts.di.DIConstants
 import com.ferum_bot.cryptocharts.interactors.ChartsInteractor
 import com.ferum_bot.cryptocharts.interactors.impl.DefaultChartsInteractor
+import com.ferum_bot.cryptocharts.interactors.impl.TestChartsInteractor
 import com.ferum_bot.cryptocharts.use_cases.DefaultTickerSizeAdapter
 import com.ferum_bot.cryptocharts.use_cases.TickerSizeAdapter
 import dagger.Module
@@ -13,7 +14,7 @@ class ChartsModule {
 
     @Provides
     fun provideInteractor(): ChartsInteractor {
-        return DefaultChartsInteractor()
+        return TestChartsInteractor()
     }
 
     @Provides

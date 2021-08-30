@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.postDelayed
 import com.ferum_bot.cryptocharts.network.enums.SocketConnectionStatus
 import com.ferum_bot.cryptocharts.databinding.ActivityChartsBinding
 import com.ferum_bot.cryptocharts.di.Injector
@@ -22,7 +23,7 @@ import javax.inject.Singleton
 @Singleton
 class ChartsActivity : AppCompatActivity() {
 
-    private val component: ChartsComponent by lazy(LazyThreadSafetyMode.NONE) {
+    private val component: ChartsComponent by lazy {
         val builder = Injector.appComponent.chartsComponent
         builder.activity(this).build()
     }
@@ -44,8 +45,14 @@ class ChartsActivity : AppCompatActivity() {
         configureLayout()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        disconnectFromSocket()
+    }
+
     private fun setAllObservers() {
-        viewModel.networkStatus.observe(this) { status ->
+        viewModel.connectionStatus.observe(this) { status ->
             when(status) {
                 SocketConnectionStatus.CONNECTING -> {
                     binding.progressBar.visibility = View.VISIBLE
@@ -57,6 +64,7 @@ class ChartsActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.GONE
                     binding.errorLabel.visibility = View.GONE
                     binding.retryButton.visibility = View.GONE
+                    binding.mainRecycler.visibility = View.VISIBLE
                 }
                 SocketConnectionStatus.DISCONNECTED, null -> {
                     binding.progressBar.visibility = View.GONE
@@ -74,6 +82,7 @@ class ChartsActivity : AppCompatActivity() {
 
         viewModel.currentTickers.observe(this) { tickers ->
             adapter.items = tickers
+            scrollRecyclerToTop()
         }
     }
 
@@ -107,11 +116,15 @@ class ChartsActivity : AppCompatActivity() {
     private fun configureRecycler() {
         val marginDecorator = MarginDecorator(
             leftMargin = 8, rightMargin = 8,
-            spaceBetweenItems = 16,
+            spaceBetweenItems = 16
         )
 
         binding.mainRecycler.adapter = adapter
         binding.mainRecycler.addItemDecoration(marginDecorator)
+    }
+
+    private fun disconnectFromSocket() {
+        viewModel.disconnect()
     }
 
     private fun showError(text: String) {
@@ -122,6 +135,12 @@ class ChartsActivity : AppCompatActivity() {
 
             val textView = this.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
             textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        }
+    }
+
+    private fun scrollRecyclerToTop() {
+        binding.mainRecycler.postDelayed(350L) {
+            binding.mainRecycler.smoothScrollToPosition(0)
         }
     }
 }

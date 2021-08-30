@@ -18,8 +18,8 @@ class ChartsViewModel @Inject constructor(
     private val sizeAdapter: TickerSizeAdapter,
 ): ViewModel() {
 
-    private val _networkStatus: MutableLiveData<SocketConnectionStatus> = MutableLiveData()
-    val networkStatus: LiveData<SocketConnectionStatus> = _networkStatus
+    private val _connectionStatus: MutableLiveData<SocketConnectionStatus> = MutableLiveData()
+    val connectionStatus: LiveData<SocketConnectionStatus> = _connectionStatus
 
     private val _errorMessage: MutableLiveData<String?> = MutableLiveData(null)
     val errorMessage: LiveData<String?> = _errorMessage
@@ -43,10 +43,16 @@ class ChartsViewModel @Inject constructor(
                 handleInComingException(exception)
             }
         }
+
+        viewModelScope.launch {
+            interactor.currentStatus.collect { status ->
+                handleInComingStatus(status)
+            }
+        }
     }
 
     fun connect() {
-        _networkStatus.value = SocketConnectionStatus.CONNECTING
+        _connectionStatus.value = SocketConnectionStatus.CONNECTING
 
         connectionJob?.cancel()
         connectionJob = viewModelScope.launch {
@@ -55,8 +61,15 @@ class ChartsViewModel @Inject constructor(
     }
 
     fun reconnect() {
-        _networkStatus.value = SocketConnectionStatus.CONNECTING
+        _connectionStatus.value = SocketConnectionStatus.CONNECTING
 
+        connectionJob?.cancel()
+        connectionJob = viewModelScope.launch {
+
+        }
+    }
+
+    fun disconnect() {
         connectionJob?.cancel()
         connectionJob = viewModelScope.launch {
 
@@ -76,5 +89,9 @@ class ChartsViewModel @Inject constructor(
 
     private fun handleInComingException(exception: Exception) {
         _errorMessage.postValue(exception.message)
+    }
+
+    private fun handleInComingStatus(status: SocketConnectionStatus) {
+        _connectionStatus.postValue(status)
     }
 }

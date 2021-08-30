@@ -33,6 +33,10 @@ class MarginDecorator(
             return
         }
 
+        if (itemsCount > 1 && position != itemsCount - 1) {
+            outRect.bottom = view.context.dpToPx(spaceBetweenItems)
+        }
+
         if (position == 0) {
             outRect.top = view.context.dpToPx(topMargin)
             return
@@ -41,7 +45,6 @@ class MarginDecorator(
             outRect.bottom = view.context.dpToPx(bottomMargin)
             return
         }
-        outRect.bottom = view.context.dpToPx(spaceBetweenItems)
     }
 
 }

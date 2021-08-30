@@ -18,6 +18,9 @@ private val callback = object: DiffUtil.ItemCallback<Ticker>() {
 
 class MainAdapter: AsyncListDifferDelegationAdapter<Ticker>(callback) {
 
-
+    init {
+        delegatesManager
+            .addDelegate(MainDelegates.tickersDelegate())
+    }
 
 }

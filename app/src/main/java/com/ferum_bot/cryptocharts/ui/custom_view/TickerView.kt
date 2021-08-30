@@ -16,6 +16,19 @@ class TickerView @JvmOverloads constructor(
     defStyleRes: Int = 0,
 ): ConstraintLayout(context, attrs, defStyleAttr, defStyleRes) {
 
+    companion object {
+
+        fun create(context: Context): TickerView {
+            val layoutParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            )
+            return TickerView(context).apply {
+                this.layoutParams = layoutParams
+            }
+        }
+    }
+
     var ticker: Ticker? = null
     set(value) {
         field = value
