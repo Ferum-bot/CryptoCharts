@@ -15,6 +15,7 @@ import com.ferum_bot.cryptocharts.databinding.ActivityChartsBinding
 import com.ferum_bot.cryptocharts.di.Injector
 import com.ferum_bot.cryptocharts.di.components.ChartsComponent
 import com.ferum_bot.cryptocharts.ui.recycler.MainAdapter
+import com.ferum_bot.cryptocharts.ui.recycler.MarginDecorator
 import com.google.android.material.snackbar.Snackbar
 import javax.inject.Singleton
 
@@ -104,7 +105,13 @@ class ChartsActivity : AppCompatActivity() {
     }
 
     private fun configureRecycler() {
+        val marginDecorator = MarginDecorator(
+            leftMargin = 8, rightMargin = 8,
+            spaceBetweenItems = 16,
+        )
+
         binding.mainRecycler.adapter = adapter
+        binding.mainRecycler.addItemDecoration(marginDecorator)
     }
 
     private fun showError(text: String) {

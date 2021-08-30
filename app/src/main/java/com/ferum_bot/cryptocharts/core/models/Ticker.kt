@@ -10,39 +10,39 @@ import kotlinx.parcelize.Parcelize
 data class Ticker(
 
     @Json(name = "type")
-    val type: String,
+    val type: String = "",
 
     @Json(name = "sequence")
-    val sequence: Long,
+    val sequence: Long = 0L,
 
     @Json(name = "product_id")
-    val productName: String,
+    val productName: String = "",
 
     @Json(name = "price")
-    val currentPrice: String,
+    val currentPrice: String = "",
 
     @Json(name = "open_24h")
-    val openDayPrice: String,
+    val openDayPrice: String = "",
 
     @Json(name = "volume_24h")
-    val volumeDayPrice: String,
+    val volumeDayPrice: String = "",
 
     @Json(name = "low_24h")
-    val lowDayPrice: String,
+    val lowDayPrice: String = "",
 
     @Json(name = "high_24h")
-    val highDayPrice: String,
+    val highDayPrice: String = "",
 
     @Json(name = "best_bid")
-    val bestBid: String,
+    val bestBid: String = "",
 
     @Json(name = "best_ask")
-    val bestAsk: String,
+    val bestAsk: String = "",
 
     @Json(name = "time")
-    val time: String,
+    val time: String = "",
 
     @Json(name = "side")
-    val side: String,
+    val side: String = "",
 
 ): Parcelable
