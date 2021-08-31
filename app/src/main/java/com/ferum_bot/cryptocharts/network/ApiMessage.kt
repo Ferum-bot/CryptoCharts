@@ -1,13 +1,13 @@
-package com.ferum_bot.cryptocharts.network.models
+package com.ferum_bot.cryptocharts.network
 
-import com.neovisionaries.ws.client.WebSocketException
-import com.neovisionaries.ws.client.WebSocketFrame
+import com.neovisionaries.ws.client.*
 
 private typealias Frame = WebSocketFrame
+private typealias Socket = WebSocket
 private typealias SocketException = WebSocketException
 
 @Suppress("ArrayInDataClass")
-sealed class ApiMessage {
+sealed class ApiMessage() {
 
     sealed class ErrorMessage(open val exception: SocketException): ApiMessage() {
 
@@ -47,13 +47,35 @@ sealed class ApiMessage {
         data class UnExpectedError(
             override val exception: SocketException,
         ): ErrorMessage(exception)
+
+        data class OpenHandshakeError(
+            override val exception: OpeningHandshakeException
+        ): ErrorMessage(exception)
+
+        data class HostnameUnverifiedError(
+            override val exception: HostnameUnverifiedException
+        ): ErrorMessage(exception)
     }
 
-    sealed class MessageReceived {
+    sealed class StatusMessage: ApiMessage() {
+
+        object Created: StatusMessage()
+
+        object Connecting: StatusMessage()
+
+        object Open: StatusMessage()
+
+        object Closing: StatusMessage()
+
+        object Closed: StatusMessage()
+    }
+
+    sealed class MessageReceived: ApiMessage() {
 
         data class TextMessageReceived(val text: String): MessageReceived()
 
         data class BinaryMessageReceived(val bytes: ByteArray): MessageReceived()
     }
+
 
 }

@@ -12,11 +12,24 @@ class DefaultChartsInteractor @Inject constructor(
 ): ChartsInteractor {
 
     override val inComingTickers: Flow<Ticker>
-        get() = TODO("Not yet implemented")
+    get() = repository.inComingTickers
 
     override val exceptions: Flow<Exception>
-        get() = TODO("Not yet implemented")
+    get() = repository.exceptions
 
     override val currentStatus: Flow<SocketConnectionStatus>
-        get() = TODO("Not yet implemented")
+    get() = repository.currentStatus
+
+
+    override suspend fun connect() {
+        repository.connect()
+    }
+
+    override suspend fun reconnect() {
+        repository.reconnect()
+    }
+
+    override suspend fun disconnect() {
+        repository.disconnect()
+    }
 }

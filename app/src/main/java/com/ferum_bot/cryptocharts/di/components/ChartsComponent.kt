@@ -1,6 +1,7 @@
 package com.ferum_bot.cryptocharts.di.components
 
 import com.ferum_bot.cryptocharts.di.modules.ChartsModule
+import com.ferum_bot.cryptocharts.di.modules.ParsersModule
 import com.ferum_bot.cryptocharts.di.modules.ViewModelsModule
 import com.ferum_bot.cryptocharts.ui.main_screen.ChartsActivity
 import com.ferum_bot.cryptocharts.ui.util.ViewModelFactory
@@ -12,6 +13,7 @@ import javax.inject.Singleton
 @Subcomponent(modules = [
     ChartsModule::class,
     ViewModelsModule::class,
+    ParsersModule::class,
 ])
 interface ChartsComponent {
 

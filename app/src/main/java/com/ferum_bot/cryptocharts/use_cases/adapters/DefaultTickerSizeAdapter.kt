@@ -1,8 +1,7 @@
-package com.ferum_bot.cryptocharts.use_cases
+package com.ferum_bot.cryptocharts.use_cases.adapters
 
 import com.ferum_bot.cryptocharts.core.models.Ticker
 import javax.inject.Inject
-import kotlin.math.max
 
 class DefaultTickerSizeAdapter @Inject constructor(
     private val maxSize: Int,

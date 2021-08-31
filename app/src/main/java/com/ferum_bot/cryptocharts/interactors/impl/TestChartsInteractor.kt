@@ -29,6 +29,18 @@ class TestChartsInteractor: ChartsInteractor {
         emit(SocketConnectionStatus.CONNECTED)
     }
 
+    override suspend fun connect() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun reconnect() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun disconnect() {
+        TODO("Not yet implemented")
+    }
+
     private fun generateTicker(): Ticker {
         return Ticker(
             type = "ticker",

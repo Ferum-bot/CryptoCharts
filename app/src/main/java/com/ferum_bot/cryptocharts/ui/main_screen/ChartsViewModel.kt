@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.ferum_bot.cryptocharts.core.models.Ticker
 import com.ferum_bot.cryptocharts.network.enums.SocketConnectionStatus
 import com.ferum_bot.cryptocharts.interactors.ChartsInteractor
-import com.ferum_bot.cryptocharts.use_cases.TickerSizeAdapter
+import com.ferum_bot.cryptocharts.use_cases.adapters.TickerSizeAdapter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -56,7 +56,7 @@ class ChartsViewModel @Inject constructor(
 
         connectionJob?.cancel()
         connectionJob = viewModelScope.launch {
-
+            interactor.connect()
         }
     }
 
@@ -65,14 +65,14 @@ class ChartsViewModel @Inject constructor(
 
         connectionJob?.cancel()
         connectionJob = viewModelScope.launch {
-
+            interactor.reconnect()
         }
     }
 
     fun disconnect() {
         connectionJob?.cancel()
         connectionJob = viewModelScope.launch {
-
+            interactor.disconnect()
         }
     }
 

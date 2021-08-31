@@ -12,4 +12,10 @@ interface ChartsInteractor {
     val exceptions: Flow<Exception>
 
     val currentStatus: Flow<SocketConnectionStatus>
+
+    suspend fun connect()
+
+    suspend fun reconnect()
+
+    suspend fun disconnect()
 }

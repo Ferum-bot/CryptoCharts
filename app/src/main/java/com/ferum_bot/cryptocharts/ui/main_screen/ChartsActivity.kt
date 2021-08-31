@@ -45,8 +45,8 @@ class ChartsActivity : AppCompatActivity() {
         configureLayout()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
 
         disconnectFromSocket()
     }
@@ -78,6 +78,7 @@ class ChartsActivity : AppCompatActivity() {
         viewModel.errorMessage.observe(this) { message ->
             message ?: return@observe
             showError(message)
+            viewModel.errorMessageHasShown()
         }
 
         viewModel.currentTickers.observe(this) { tickers ->

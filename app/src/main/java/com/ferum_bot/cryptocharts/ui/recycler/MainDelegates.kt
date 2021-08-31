@@ -10,7 +10,7 @@ object MainDelegates {
 
     fun tickersDelegate() = adapterDelegate<Ticker, Ticker>(
         R.layout.layout_ticker,
-        layoutInflater = { parent: ViewGroup, layoutRes: Int ->
+        layoutInflater = { parent: ViewGroup, _: Int ->
             val context = parent.context
             return@adapterDelegate TickerView.create(context)
         }

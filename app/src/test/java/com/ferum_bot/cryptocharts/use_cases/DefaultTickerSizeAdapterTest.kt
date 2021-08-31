@@ -1,6 +1,8 @@
 package com.ferum_bot.cryptocharts.use_cases
 
 import com.ferum_bot.cryptocharts.core.models.Ticker
+import com.ferum_bot.cryptocharts.use_cases.adapters.DefaultTickerSizeAdapter
+import com.ferum_bot.cryptocharts.use_cases.adapters.TickerSizeAdapter
 import org.junit.Test
 
 import org.junit.Assert.*
