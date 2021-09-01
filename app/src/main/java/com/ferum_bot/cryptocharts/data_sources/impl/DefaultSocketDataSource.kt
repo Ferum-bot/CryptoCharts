@@ -6,7 +6,9 @@ import com.ferum_bot.cryptocharts.network.models.SubscribeRequest
 import com.neovisionaries.ws.client.*
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.runBlocking
@@ -36,6 +38,7 @@ class DefaultSocketDataSource @Inject constructor(
     }
 
     override suspend fun connect() {
+        delay(3000L)
         tryToConnect(socket)
     }
 
@@ -54,7 +57,7 @@ class DefaultSocketDataSource @Inject constructor(
             WebSocketState.CLOSING -> ApiMessage.StatusMessage.Closing
             WebSocketState.CONNECTING -> ApiMessage.StatusMessage.Connecting
             WebSocketState.CREATED -> ApiMessage.StatusMessage.Created
-            WebSocketState.OPEN -> ApiMessage.StatusMessage.Open.also { subscribeToApi() }
+            WebSocketState.OPEN -> ApiMessage.StatusMessage.Open.also { subscribeToApi(websocket ?: return@also) }
         }
         sendMessage(message)
     }
@@ -63,6 +66,14 @@ class DefaultSocketDataSource @Inject constructor(
         text ?: return
         val message = ApiMessage.MessageReceived.TextMessageReceived(text)
         sendMessage(message)
+    }
+
+    override fun onBinaryMessage(websocket: WebSocket?, binary: ByteArray?) {
+        super.onBinaryMessage(websocket, binary)
+    }
+
+    override fun onTextFrame(websocket: WebSocket?, frame: WebSocketFrame?) {
+        super.onTextFrame(websocket, frame)
     }
 
     override fun onConnectError(websocket: WebSocket?, exception: WebSocketException?) {
@@ -127,10 +138,21 @@ class DefaultSocketDataSource @Inject constructor(
         sendMessage(message)
     }
 
+    override fun handleCallbackError(websocket: WebSocket?, cause: Throwable?) {
+        cause ?: return
+        val exception = WebSocketException(WebSocketError.SOCKET_OVERLAY_ERROR, cause.message)
+        val message = ApiMessage.ErrorMessage.CallbackError(exception)
+        sendMessage(message)
+    }
+
     override fun onPongFrame(websocket: WebSocket?, frame: WebSocketFrame?) {
         websocket ?: return
         frame ?: return
         websocket.sendPing()
+    }
+
+    override fun onTextMessage(websocket: WebSocket?, data: ByteArray?) {
+        super.onTextMessage(websocket, data)
     }
 
     private suspend fun tryToConnect(socket: WebSocket) {
@@ -152,7 +174,7 @@ class DefaultSocketDataSource @Inject constructor(
         _socketMessages.emit(message)
     }
 
-    private fun subscribeToApi() {
+    private fun subscribeToApi(socket: WebSocket) {
         val channelsToSubscribe = listOf("ticker")
         val productsToSubscribe = listOf(
             "BTC-USD", "BTC-EUR", "ETH-USD", "ETH-EUR",
@@ -163,10 +185,9 @@ class DefaultSocketDataSource @Inject constructor(
             productsToSubscribe = productsToSubscribe
         )
 
-        val moshi = Moshi.Builder().build()
+        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val adapter = moshi.adapter(SubscribeRequest::class.java)
         val jsonString = adapter.toJson(subscribeRequest)
-
         socket.sendText(jsonString)
     }
 }

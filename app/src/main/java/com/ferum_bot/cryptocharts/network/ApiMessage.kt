@@ -55,6 +55,10 @@ sealed class ApiMessage() {
         data class HostnameUnverifiedError(
             override val exception: HostnameUnverifiedException
         ): ErrorMessage(exception)
+
+        data class CallbackError(
+            override val exception: SocketException
+        ): ErrorMessage(exception)
     }
 
     sealed class StatusMessage: ApiMessage() {

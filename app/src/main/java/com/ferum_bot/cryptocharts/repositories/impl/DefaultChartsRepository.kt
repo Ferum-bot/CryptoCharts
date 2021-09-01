@@ -44,7 +44,7 @@ class DefaultChartsRepository @Inject constructor(
         }
     }
 
-    override suspend fun connect() = withContext(Dispatchers.IO){
+    override suspend fun connect() = withContext(Dispatchers.IO) {
         dataSource.connect()
     }
 

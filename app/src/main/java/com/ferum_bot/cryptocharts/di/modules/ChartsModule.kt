@@ -21,6 +21,8 @@ import com.neovisionaries.ws.client.WebSocketFactory
 import dagger.Module
 import dagger.Provides
 import java.net.URI
+import javax.net.ssl.SSLServerSocketFactory
+import javax.net.ssl.SSLSocketFactory
 
 @Module
 class ChartsModule {
@@ -59,6 +61,7 @@ class ChartsModule {
     @Provides
     fun provideApiSocket(): WebSocket {
         val factory = WebSocketFactory()
+        factory.socketFactory = SSLSocketFactory.getDefault()
         val apiUri = URI("wss://ws-feed.pro.coinbase.com")
         return factory.createSocket(apiUri)
     }

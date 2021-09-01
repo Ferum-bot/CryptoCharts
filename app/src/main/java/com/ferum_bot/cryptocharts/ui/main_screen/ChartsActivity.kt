@@ -136,6 +136,7 @@ class ChartsActivity : AppCompatActivity() {
 
             val textView = this.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
             textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
+            show()
         }
     }
 
