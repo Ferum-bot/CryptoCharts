@@ -30,7 +30,6 @@ class ChartsViewModel @Inject constructor(
     private var connectionJob: Job? = null
 
     init {
-        connect()
 
         viewModelScope.launch {
             interactor.inComingTickers.collect { ticker ->

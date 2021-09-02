@@ -11,6 +11,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.postDelayed
+import com.ferum_bot.cryptocharts.R
 import com.ferum_bot.cryptocharts.network.enums.SocketConnectionStatus
 import com.ferum_bot.cryptocharts.databinding.ActivityChartsBinding
 import com.ferum_bot.cryptocharts.di.Injector
@@ -56,21 +57,18 @@ class ChartsActivity : AppCompatActivity() {
             when(status) {
                 SocketConnectionStatus.CONNECTING -> {
                     binding.progressBar.visibility = View.VISIBLE
-                    binding.errorLabel.visibility = View.GONE
-                    binding.retryButton.visibility = View.GONE
+                    binding.connectionButton.text = getString(R.string.connecting)
                     binding.mainRecycler.visibility = View.GONE
                 }
                 SocketConnectionStatus.CONNECTED -> {
                     binding.progressBar.visibility = View.GONE
-                    binding.errorLabel.visibility = View.GONE
-                    binding.retryButton.visibility = View.GONE
+                    binding.connectionButton.text = getString(R.string.close)
                     binding.mainRecycler.visibility = View.VISIBLE
                 }
                 SocketConnectionStatus.DISCONNECTED, null -> {
                     binding.progressBar.visibility = View.GONE
-                    binding.errorLabel.visibility = View.VISIBLE
-                    binding.retryButton.visibility = View.VISIBLE
-                    binding.mainRecycler.visibility = View.GONE
+                    binding.connectionButton.text = getString(R.string.reconnect)
+                    binding.mainRecycler.visibility = View.VISIBLE
                 }
             }
         }
@@ -88,8 +86,12 @@ class ChartsActivity : AppCompatActivity() {
     }
 
     private fun setAllClickListeners() {
-        binding.retryButton.setOnClickListener {
-            viewModel.reconnect()
+        binding.connectionButton.setOnClickListener {
+            when(binding.connectionButton.text) {
+                getString(R.string.connect) -> viewModel.connect()
+                getString(R.string.reconnect) -> viewModel.reconnect()
+                getString(R.string.close) -> viewModel.disconnect()
+            }
         }
     }
 

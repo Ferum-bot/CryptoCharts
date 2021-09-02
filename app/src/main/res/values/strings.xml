@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">CryptoCharts</string>
     <string name="reconnect">Reconnect</string>
+    <string name="close">Close Connection</string>
+    <string name="connect">Connect</string>
+    <string name="connecting">Connecting</string>
     <string name="connection_failed">Connection failed!</string>
     <string name="name">Name: </string>
     <string name="current_price">Current Price:</string>
