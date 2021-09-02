@@ -63,6 +63,10 @@ fun DependencyHandler.addAllNetworkDependencies() {
     implementation(Dependencies.GSON)
 }
 
+fun DependencyHandler.addWebSocketDependencies() {
+    implementation(Dependencies.JAVA_WEB_SOCKETS)
+}
+
 fun DependencyHandler.addAllDIDependencies() {
     implementation(Dependencies.DAGGER)
     implementation(Dependencies.DAGGER_ANDROID)

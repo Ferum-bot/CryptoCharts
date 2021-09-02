@@ -1,63 +1,16 @@
 package com.ferum_bot.cryptocharts.network
 
-import com.neovisionaries.ws.client.*
-
-private typealias Frame = WebSocketFrame
-private typealias Socket = WebSocket
-private typealias SocketException = WebSocketException
-
 @Suppress("ArrayInDataClass")
 sealed class ApiMessage() {
 
-    sealed class ErrorMessage(open val exception: SocketException): ApiMessage() {
+    sealed class ErrorMessage(open val exception: Exception): ApiMessage() {
 
         data class ConnectError(
-            override val exception: SocketException
+            override val exception: Exception
         ): ErrorMessage(exception)
 
         data class SocketError(
-            override val exception: SocketException
-        ): ErrorMessage(exception)
-
-        data class FrameError(
-            override val exception: SocketException,
-            val frame: Frame
-        ): ErrorMessage(exception)
-
-        data class MessageError(
-            override val exception: SocketException,
-            val frames: List<Frame>
-        ): ErrorMessage(exception)
-
-        data class MessageDecompressionError(
-            override val exception: SocketException,
-            val bytes: ByteArray,
-        ): ErrorMessage(exception)
-
-        data class TextMessageError(
-            override val exception: SocketException,
-            val data: ByteArray,
-        ): ErrorMessage(exception)
-
-        data class SendError(
-            override val exception: SocketException,
-            val frame: Frame,
-        ): ErrorMessage(exception)
-
-        data class UnExpectedError(
-            override val exception: SocketException,
-        ): ErrorMessage(exception)
-
-        data class OpenHandshakeError(
-            override val exception: OpeningHandshakeException
-        ): ErrorMessage(exception)
-
-        data class HostnameUnverifiedError(
-            override val exception: HostnameUnverifiedException
-        ): ErrorMessage(exception)
-
-        data class CallbackError(
-            override val exception: SocketException
+            override val exception: Exception
         ): ErrorMessage(exception)
     }
 

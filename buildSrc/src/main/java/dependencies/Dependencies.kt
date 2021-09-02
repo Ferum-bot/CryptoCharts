@@ -35,8 +35,9 @@ object Dependencies {
     const val MOSHI_KOTLIN = "com.squareup.moshi:moshi-kotlin:${Versions.MOSHI}"
     const val GSON = "com.google.code.gson:gson:${Versions.GSON}"
 
-    // Network: NV WebSocket protocol support
-    const val WEB_SOCKETS = "com.neovisionaries:nv-websocket-client:${Versions.WEB_SOCKETS}"
+    // Network: WebSockets
+    const val NV_WEB_SOCKETS = "com.neovisionaries:nv-websocket-client:${Versions.NV_WEB_SOCKETS}"
+    const val JAVA_WEB_SOCKETS = "org.java-websocket:Java-WebSocket:${Versions.JAVA_WEB_SOCKETS}"
 
     // UI: Androidx presentation views
     const val MATERIAL = "com.google.android.material:material:${Versions.MATERIAL}"

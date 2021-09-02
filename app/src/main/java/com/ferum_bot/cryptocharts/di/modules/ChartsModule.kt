@@ -16,12 +16,9 @@ import com.ferum_bot.cryptocharts.repositories.impl.DefaultChartsRepository
 import com.ferum_bot.cryptocharts.use_cases.adapters.DefaultTickerSizeAdapter
 import com.ferum_bot.cryptocharts.use_cases.adapters.TickerSizeAdapter
 import com.ferum_bot.cryptocharts.use_cases.parsers.InComingMessagesParser
-import com.neovisionaries.ws.client.WebSocket
-import com.neovisionaries.ws.client.WebSocketFactory
 import dagger.Module
 import dagger.Provides
 import java.net.URI
-import javax.net.ssl.SSLServerSocketFactory
 import javax.net.ssl.SSLSocketFactory
 
 @Module
@@ -38,8 +35,10 @@ class ChartsModule {
     }
 
     @Provides
-    fun provideSocketDataSource(socket: WebSocket): SocketConnectionDataSource {
-        return DefaultSocketDataSource(socket)
+    fun provideSocketDataSource(): SocketConnectionDataSource {
+        val apiUri = URI("wss://ws-feed.pro.coinbase.com")
+        val socketFactory = SSLSocketFactory.getDefault() as SSLSocketFactory
+        return DefaultSocketDataSource(apiUri, socketFactory)
     }
 
     @Provides
@@ -56,13 +55,5 @@ class ChartsModule {
         dataSource: SocketConnectionDataSource,
     ): ChartsRepository {
         return DefaultChartsRepository(dataSource, tickerParser, exceptionParser, statusParser)
-    }
-
-    @Provides
-    fun provideApiSocket(): WebSocket {
-        val factory = WebSocketFactory()
-        factory.socketFactory = SSLSocketFactory.getDefault()
-        val apiUri = URI("wss://ws-feed.pro.coinbase.com")
-        return factory.createSocket(apiUri)
     }
 }

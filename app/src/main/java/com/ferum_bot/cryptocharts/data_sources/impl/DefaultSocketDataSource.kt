@@ -3,7 +3,6 @@ package com.ferum_bot.cryptocharts.data_sources.impl
 import com.ferum_bot.cryptocharts.data_sources.SocketConnectionDataSource
 import com.ferum_bot.cryptocharts.network.ApiMessage
 import com.ferum_bot.cryptocharts.network.models.SubscribeRequest
-import com.neovisionaries.ws.client.*
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -12,18 +11,29 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.runBlocking
+import org.java_websocket.client.WebSocketClient
+import org.java_websocket.handshake.ServerHandshake
+import java.lang.Exception
+import java.net.URI
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.net.ssl.SSLSocketFactory
 
 @Suppress("BlockingMethodInNonBlockingContext")
 class DefaultSocketDataSource @Inject constructor(
-    private val socket: WebSocket,
-): SocketConnectionDataSource, WebSocketAdapter() {
+    private val uri: URI,
+    socketFactory: SSLSocketFactory
+): SocketConnectionDataSource {
 
     companion object {
 
         private const val REPLAY_COUNT = 1
         private const val EXTRA_CAPACITY = 1
+
+        private const val CONNECTION_TIMEOUT_MILLIS = 3000L
     }
+
+    private val webSocketClient: WebSocketClient
 
     private val _socketMessages = MutableSharedFlow<ApiMessage>(
         replay = REPLAY_COUNT,
@@ -34,147 +44,59 @@ class DefaultSocketDataSource @Inject constructor(
     get() = _socketMessages
 
     init {
-        socket.addListener(this)
+
+         webSocketClient = object: WebSocketClient(uri) {
+
+            override fun onOpen(handshakedata: ServerHandshake?) {
+                handshakedata ?: return
+                val message = ApiMessage.StatusMessage.Open
+                sendMessage(message)
+                subscribeToApi(this)
+            }
+
+            override fun onMessage(message: String?) {
+                message ?: return
+                val apiMessage = ApiMessage.MessageReceived.TextMessageReceived(message)
+                sendMessage(apiMessage)
+            }
+
+            override fun onClose(code: Int, reason: String?, remote: Boolean) {
+                val message = ApiMessage.StatusMessage.Closed
+                sendMessage(message)
+            }
+
+            override fun onError(ex: Exception?) {
+                ex ?: return
+                val message = ApiMessage.ErrorMessage.SocketError(ex)
+                sendMessage(message)
+            }
+        }
+        webSocketClient.setSocketFactory(socketFactory)
     }
 
     override suspend fun connect() {
-        delay(3000L)
-        tryToConnect(socket)
+        catchInterruptedException({
+            webSocketClient.connectBlocking(CONNECTION_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
+        })
     }
 
     override suspend fun reconnect() {
-        tryToConnect(socket.recreate())
+        catchInterruptedException({
+            webSocketClient.reconnectBlocking()
+        })
     }
 
     override suspend fun disconnect() {
-        socket.disconnect(WebSocketCloseCode.NORMAL)
-    }
-
-    override fun onStateChanged(websocket: WebSocket?, newState: WebSocketState?) {
-        newState ?: return
-        val message = when(newState) {
-            WebSocketState.CLOSED -> ApiMessage.StatusMessage.Closed
-            WebSocketState.CLOSING -> ApiMessage.StatusMessage.Closing
-            WebSocketState.CONNECTING -> ApiMessage.StatusMessage.Connecting
-            WebSocketState.CREATED -> ApiMessage.StatusMessage.Created
-            WebSocketState.OPEN -> ApiMessage.StatusMessage.Open.also { subscribeToApi(websocket ?: return@also) }
-        }
-        sendMessage(message)
-    }
-
-    override fun onTextMessage(websocket: WebSocket?, text: String?) {
-        text ?: return
-        val message = ApiMessage.MessageReceived.TextMessageReceived(text)
-        sendMessage(message)
-    }
-
-    override fun onBinaryMessage(websocket: WebSocket?, binary: ByteArray?) {
-        super.onBinaryMessage(websocket, binary)
-    }
-
-    override fun onTextFrame(websocket: WebSocket?, frame: WebSocketFrame?) {
-        super.onTextFrame(websocket, frame)
-    }
-
-    override fun onConnectError(websocket: WebSocket?, exception: WebSocketException?) {
-        exception ?: return
-        val message = ApiMessage.ErrorMessage.ConnectError(exception)
-        sendMessage(message)
-    }
-
-    override fun onError(websocket: WebSocket?, cause: WebSocketException?) {
-        cause ?: return
-        val message = ApiMessage.ErrorMessage.SocketError(cause)
-        sendMessage(message)
-    }
-
-
-    override fun onFrameError(websocket: WebSocket?, cause: WebSocketException?, frame: WebSocketFrame?) {
-        cause ?: return
-        frame ?: return
-        val message = ApiMessage.ErrorMessage.FrameError(cause, frame)
-        sendMessage(message)
-    }
-
-    override fun onSendError(websocket: WebSocket?, cause: WebSocketException?, frame: WebSocketFrame?) {
-        cause ?: return
-        frame ?: return
-        val message = ApiMessage.ErrorMessage.SendError(cause, frame)
-        sendMessage(message)
-    }
-
-    override fun onTextMessageError(websocket: WebSocket?, cause: WebSocketException?, data: ByteArray?) {
-        cause ?: return
-        data ?: return
-        val message = ApiMessage.ErrorMessage.TextMessageError(cause, data)
-        sendMessage(message)
-    }
-
-    override fun onUnexpectedError(websocket: WebSocket?, cause: WebSocketException?) {
-        cause ?: return
-        val message = ApiMessage.ErrorMessage.UnExpectedError(cause)
-        sendMessage(message)
-    }
-
-    override fun onMessageError(
-        websocket: WebSocket?,
-        cause: WebSocketException?,
-        frames: MutableList<WebSocketFrame>?
-    ) {
-        cause ?: return
-        frames ?: return
-        val message = ApiMessage.ErrorMessage.MessageError(cause, frames)
-        sendMessage(message)
-    }
-
-    override fun onMessageDecompressionError(
-        websocket: WebSocket?,
-        cause: WebSocketException?,
-        compressed: ByteArray?
-    ) {
-        cause ?: return
-        compressed ?: return
-        val message = ApiMessage.ErrorMessage.MessageDecompressionError(cause, compressed)
-        sendMessage(message)
-    }
-
-    override fun handleCallbackError(websocket: WebSocket?, cause: Throwable?) {
-        cause ?: return
-        val exception = WebSocketException(WebSocketError.SOCKET_OVERLAY_ERROR, cause.message)
-        val message = ApiMessage.ErrorMessage.CallbackError(exception)
-        sendMessage(message)
-    }
-
-    override fun onPongFrame(websocket: WebSocket?, frame: WebSocketFrame?) {
-        websocket ?: return
-        frame ?: return
-        websocket.sendPing()
-    }
-
-    override fun onTextMessage(websocket: WebSocket?, data: ByteArray?) {
-        super.onTextMessage(websocket, data)
-    }
-
-    private suspend fun tryToConnect(socket: WebSocket) {
-        try {
-            socket.connect()
-        } catch (ex: OpeningHandshakeException) {
-            val error = ApiMessage.ErrorMessage.OpenHandshakeError(ex)
-            _socketMessages.emit(error)
-        } catch (ex: HostnameUnverifiedException) {
-            val error = ApiMessage.ErrorMessage.HostnameUnverifiedError(ex)
-            _socketMessages.emit(error)
-        } catch (ex: WebSocketException) {
-            val error = ApiMessage.ErrorMessage.ConnectError(ex)
-            _socketMessages.emit(error)
-        }
+        catchInterruptedException({
+            webSocketClient.closeBlocking()
+        })
     }
 
     private fun sendMessage(message: ApiMessage) = runBlocking {
         _socketMessages.emit(message)
     }
 
-    private fun subscribeToApi(socket: WebSocket) {
+    private fun subscribeToApi(socket: WebSocketClient) {
         val channelsToSubscribe = listOf("ticker")
         val productsToSubscribe = listOf(
             "BTC-USD", "BTC-EUR", "ETH-USD", "ETH-EUR",
@@ -188,6 +110,17 @@ class DefaultSocketDataSource @Inject constructor(
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val adapter = moshi.adapter(SubscribeRequest::class.java)
         val jsonString = adapter.toJson(subscribeRequest)
-        socket.sendText(jsonString)
+        socket.send(jsonString)
+    }
+
+    private fun catchInterruptedException(
+        action: () -> Unit,
+        onError: () -> Unit = {}
+    ) = try {
+        action.invoke()
+    } catch (ex: InterruptedException) {
+        onError.invoke()
+        val message = ApiMessage.ErrorMessage.ConnectError(ex)
+        sendMessage(message)
     }
 }

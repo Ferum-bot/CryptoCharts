@@ -26,7 +26,8 @@ object Versions {
     const val MOSHI = "1.9.3"
     const val GSON = "2.8.7"
 
-    const val WEB_SOCKETS = "2.14"
+    const val NV_WEB_SOCKETS = "2.14"
+    const val JAVA_WEB_SOCKETS = "1.5.1"
 
     // UI: Androidx presentation views
     const val MATERIAL = "1.1.0"
