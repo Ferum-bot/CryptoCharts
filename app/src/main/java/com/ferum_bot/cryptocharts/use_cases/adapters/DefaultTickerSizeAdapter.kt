@@ -8,7 +8,7 @@ class DefaultTickerSizeAdapter @Inject constructor(
     private val keepUnique: Boolean,
 ): TickerSizeAdapter {
 
-    override fun adaptLatTickers(tickers: List<Ticker>): List<Ticker> {
+    override fun adaptLastTickers(tickers: List<Ticker>): List<Ticker> {
         if (tickers.size <= maxSize) {
             return tickers
         }

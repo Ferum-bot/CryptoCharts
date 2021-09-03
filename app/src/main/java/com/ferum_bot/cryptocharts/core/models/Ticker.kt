@@ -45,4 +45,14 @@ data class Ticker(
     @Json(name = "side")
     val side: String = "",
 
-): Parcelable
+): Parcelable {
+
+    fun getWithNewTime(newTime: String): Ticker {
+        return Ticker(
+            type, sequence, productName,
+            currentPrice, openDayPrice, volumeDayPrice,
+            lowDayPrice, highDayPrice, bestBid,
+            bestAsk, newTime, side
+        )
+    }
+}

@@ -20,7 +20,7 @@ class DefaultTickerSizeAdapterTest {
             Ticker(productName = "test1"), Ticker(productName = "test2"), Ticker(productName = "test9"),
         )
 
-        val actualResult = adapter.adaptLatTickers(inputList).toTypedArray()
+        val actualResult = adapter.adaptLastTickers(inputList).toTypedArray()
         val expectedResult = listOf(
             Ticker(productName = "test1"), Ticker(productName = "test2"), Ticker(productName = "test3"),
             Ticker(productName = "test1"), Ticker(productName = "test6"), Ticker(productName = "test9"),
@@ -40,7 +40,7 @@ class DefaultTickerSizeAdapterTest {
             Ticker(productName = "test1"), Ticker(productName = "test9"), Ticker(productName = "test9"),
         )
 
-        val actualResult = adapter.adaptLatTickers(inputList).toTypedArray()
+        val actualResult = adapter.adaptLastTickers(inputList).toTypedArray()
         val expectedResult = listOf(
             Ticker(productName = "test1"), Ticker(productName = "test2"), Ticker(productName = "test3"),
             Ticker(productName = "test1"), Ticker(productName = "test6"), Ticker(productName = "test9"),

@@ -8,6 +8,8 @@ import com.ferum_bot.cryptocharts.core.models.Ticker
 import com.ferum_bot.cryptocharts.network.enums.SocketConnectionStatus
 import com.ferum_bot.cryptocharts.interactors.ChartsInteractor
 import com.ferum_bot.cryptocharts.use_cases.adapters.TickerSizeAdapter
+import com.ferum_bot.cryptocharts.use_cases.parsers.ApiDateTimeParser
+import com.ferum_bot.cryptocharts.use_cases.parsers.DateTimeParser
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -15,7 +17,7 @@ import javax.inject.Inject
 
 class ChartsViewModel @Inject constructor(
     private val interactor: ChartsInteractor,
-    private val sizeAdapter: TickerSizeAdapter,
+    private val sizeAdapter: TickerSizeAdapter
 ): ViewModel() {
 
     private val _connectionStatus: MutableLiveData<SocketConnectionStatus> = MutableLiveData()
@@ -82,7 +84,7 @@ class ChartsViewModel @Inject constructor(
     private fun handleInComingTicker(ticker: Ticker) {
         val tickers = currentTickers.value.orEmpty().toMutableList()
         tickers.add(0, ticker)
-        val actualTickers = sizeAdapter.adaptLatTickers(tickers)
+        val actualTickers = sizeAdapter.adaptLastTickers(tickers)
         _currentTickers.postValue(actualTickers)
     }
 

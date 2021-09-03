@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -44,6 +45,7 @@ class ChartsActivity : AppCompatActivity() {
         setAllObservers()
         setAllClickListeners()
         configureLayout()
+        disableNightMode()
     }
 
     override fun onStop() {
@@ -124,6 +126,10 @@ class ChartsActivity : AppCompatActivity() {
 
         binding.mainRecycler.adapter = adapter
         binding.mainRecycler.addItemDecoration(marginDecorator)
+    }
+
+    private fun disableNightMode() {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
     private fun disconnectFromSocket() {

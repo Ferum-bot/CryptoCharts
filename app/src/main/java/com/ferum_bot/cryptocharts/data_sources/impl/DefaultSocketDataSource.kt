@@ -2,6 +2,7 @@ package com.ferum_bot.cryptocharts.data_sources.impl
 
 import com.ferum_bot.cryptocharts.data_sources.SocketConnectionDataSource
 import com.ferum_bot.cryptocharts.network.ApiMessage
+import com.ferum_bot.cryptocharts.network.logging.SocketLogger
 import com.ferum_bot.cryptocharts.network.models.SubscribeRequest
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -22,7 +23,8 @@ import javax.net.ssl.SSLSocketFactory
 @Suppress("BlockingMethodInNonBlockingContext")
 class DefaultSocketDataSource @Inject constructor(
     private val uri: URI,
-    socketFactory: SSLSocketFactory
+    private val logger: SocketLogger,
+    socketFactory: SSLSocketFactory,
 ): SocketConnectionDataSource {
 
     companion object {
@@ -49,6 +51,8 @@ class DefaultSocketDataSource @Inject constructor(
 
             override fun onOpen(handshakedata: ServerHandshake?) {
                 handshakedata ?: return
+                logger.logOpen(handshakedata)
+
                 val message = ApiMessage.StatusMessage.Open
                 sendMessage(message)
                 subscribeToApi(this)
@@ -56,17 +60,23 @@ class DefaultSocketDataSource @Inject constructor(
 
             override fun onMessage(message: String?) {
                 message ?: return
+                logger.logMessage(message)
+
                 val apiMessage = ApiMessage.MessageReceived.TextMessageReceived(message)
                 sendMessage(apiMessage)
             }
 
             override fun onClose(code: Int, reason: String?, remote: Boolean) {
+                logger.logClose(code, reason, remote)
+
                 val message = ApiMessage.StatusMessage.Closed
                 sendMessage(message)
             }
 
             override fun onError(ex: Exception?) {
                 ex ?: return
+                logger.logException(ex)
+
                 val message = ApiMessage.ErrorMessage.SocketError(ex)
                 sendMessage(message)
             }

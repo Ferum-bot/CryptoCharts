@@ -17,3 +17,8 @@ annotation class TickerParser
 @Retention(RUNTIME)
 @MustBeDocumented
 annotation class ExceptionParser
+
+@Qualifier
+@Retention(RUNTIME)
+@MustBeDocumented
+annotation class ParsedDateTimePattern

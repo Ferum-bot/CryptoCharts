@@ -11,22 +11,30 @@ import com.ferum_bot.cryptocharts.interactors.ChartsInteractor
 import com.ferum_bot.cryptocharts.interactors.impl.DefaultChartsInteractor
 import com.ferum_bot.cryptocharts.network.ApiMessage
 import com.ferum_bot.cryptocharts.network.enums.SocketConnectionStatus
+import com.ferum_bot.cryptocharts.network.logging.SocketLogger
+import com.ferum_bot.cryptocharts.network.logging.TimberSocketLogger
 import com.ferum_bot.cryptocharts.repositories.ChartsRepository
 import com.ferum_bot.cryptocharts.repositories.impl.DefaultChartsRepository
 import com.ferum_bot.cryptocharts.use_cases.adapters.DefaultTickerSizeAdapter
 import com.ferum_bot.cryptocharts.use_cases.adapters.TickerSizeAdapter
+import com.ferum_bot.cryptocharts.use_cases.parsers.DateTimeParser
 import com.ferum_bot.cryptocharts.use_cases.parsers.InComingMessagesParser
 import dagger.Module
 import dagger.Provides
 import java.net.URI
+import java.text.SimpleDateFormat
 import javax.net.ssl.SSLSocketFactory
 
 @Module
 class ChartsModule {
 
     @Provides
-    fun provideInteractor(repository: ChartsRepository): ChartsInteractor {
-        return DefaultChartsInteractor(repository)
+    fun provideInteractor(
+        repository: ChartsRepository,
+        dateTimeParser: DateTimeParser,
+        dateFormat: SimpleDateFormat,
+    ): ChartsInteractor {
+        return DefaultChartsInteractor(repository, dateTimeParser, dateFormat)
     }
 
     @Provides
@@ -35,10 +43,12 @@ class ChartsModule {
     }
 
     @Provides
-    fun provideSocketDataSource(): SocketConnectionDataSource {
+    fun provideSocketDataSource(
+        socketLogger: SocketLogger,
+    ): SocketConnectionDataSource {
         val apiUri = URI("wss://ws-feed.pro.coinbase.com")
         val socketFactory = SSLSocketFactory.getDefault() as SSLSocketFactory
-        return DefaultSocketDataSource(apiUri, socketFactory)
+        return DefaultSocketDataSource(apiUri, socketLogger, socketFactory)
     }
 
     @Provides
@@ -55,5 +65,10 @@ class ChartsModule {
         dataSource: SocketConnectionDataSource,
     ): ChartsRepository {
         return DefaultChartsRepository(dataSource, tickerParser, exceptionParser, statusParser)
+    }
+
+    @Provides
+    fun provideSocketLogger(): SocketLogger {
+        return TimberSocketLogger()
     }
 }
